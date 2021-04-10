@@ -215,10 +215,8 @@ Sub ItemAction (Action)
             End If
         Case 2
             health = health + 10
-            If y Then
-                SetInventory(0)
-            End If
-            Print "You feel a lot better."
+            SetInventory(0)
+            Print "You feel better after eating the food."
         Case 3
             health = 0
             Print "You died."
@@ -258,7 +256,6 @@ Sub MoveNorth
         Exit Sub
     End If
     CurrentRoom = Rooms(CurrentRoom).north
-
 End Sub
 
 Sub MoveSouth
@@ -287,7 +284,7 @@ End Sub
 Sub PrintRoom
     pname$ = LTrim$(RTrim$(Rooms(CurrentRoom).name))
     pdes$ = LTrim$(RTrim$(Rooms(CurrentRoom).description))
-    pitem$ = LTrim$(RTrim$(Items(Rooms(CurrentRoom).item).name))
+    
     Print "You are in the "; pname$
     If pdes$ <> "" Then
         Print pdes$
@@ -295,7 +292,13 @@ Sub PrintRoom
     End If
     If Rooms(CurrentRoom).item <> 0 Then
         Print
+        pitem$ = LTrim$(RTrim$(Items(Rooms(CurrentRoom).item).name))
         Print "There is a "; pitem$; " here"
+    End If
+    If GetInventory <> 0 Then
+        Print
+        pitem$ = LTrim$(RTrim$(Items(GetInventory).name))
+        Print "You are holding a "; pitem$; "."
     End If
     Print
     Print "        "; Chr$(218); String$(50, 196); Chr$(191)
