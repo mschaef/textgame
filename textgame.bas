@@ -8,7 +8,7 @@ DECLARE SUB DropItem ()
 DECLARE SUB GetItem ()
 DECLARE FUNCTION GetCommand! ()
 DECLARE SUB PrintRoom ()
-Type room
+Type Room
     name As String * 32
     description As String * 127
     north As Integer
@@ -30,7 +30,7 @@ Type ItemDefinition
 End Type
 
 Dim Shared CurrentRoom As Integer 'Variable for the current room
-Dim Shared Rooms(100) As room 'Array for defining rooms
+Dim Shared Rooms(100) As Room 'Array for defining rooms
 Dim Shared Items(100) As ItemDefinition 'Array for definins items
 Dim Shared Flag As Integer 'Flag for game conditional
 Dim Shared health As Integer 'Variable for health
@@ -145,14 +145,21 @@ health = health - 1
 Return
 End
 
+FUNCTION GetInventory()
+    GetInventory = Rooms(0).item
+END FUNCTION
+
+SUB SetInventory(newInventory)
+   Rooms(0).item = newInventory
+END SUB
 
 Sub DropItem
-    If Rooms(0).item = 0 Then
+    If GetInventory = 0 Then
         Print "You have nothing to set down."
         Exit Sub
     End If
-    Rooms(CurrentRoom).item = Rooms(0).item
-    Rooms(0).item = 0
+    Rooms(CurrentRoom).item = GetInventory
+    SetInventory(0)
 End Sub
 
 Function GetCommand
@@ -184,14 +191,14 @@ Sub GetItem
         Print "There is nothing here to pick up."
         Exit Sub
     End If
-    Rooms(0).item = Rooms(CurrentRoom).item
+    SetInventory Rooms(CurrentRoom).item
     Rooms(CurrentRoom).item = 0
-    Action = Items(Rooms(0).item).GetAction
+    Action = Items(GetInventory).GetAction
     ItemAction Action
 End Sub
 
 Sub ItemAction (Action)
-    item = Rooms(0).item
+    item = GetInventory
     x = Items(item).x
     y = Items(item).y
     If item = 0 Then
@@ -209,7 +216,7 @@ Sub ItemAction (Action)
         Case 2
             health = health + 10
             If y Then
-                Rooms(0).item = 0
+                SetInventory(0)
             End If
             Print "You feel a lot better."
         Case 3
@@ -220,7 +227,7 @@ Sub ItemAction (Action)
             End
         Case 4
             If CurrentRoom = x And Flag Then
-                Print Items(Rooms(0).item).description
+                Print Items(GetInventory).description
                 End
             End If
         Case 5
@@ -297,7 +304,7 @@ Sub PrintRoom
 End Sub
 
 Sub UseItem
-    Action = Items(Rooms(0).item).Action
+    Action = Items(GetInventory).Action
     ItemAction Action
 End Sub
 
