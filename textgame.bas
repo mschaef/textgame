@@ -165,8 +165,13 @@ Function GetCommand
     Print "5 - Get Item"
     Print "6 - Set Item Down"
     Print "7 - Use Item"
+    Print "0 - Quit"
     retry:
-    Input ">", x
+    Input "> ", x
+    If x = 0 Then
+        Print "Bye Bye!"
+        End
+    End If
     If x < 1 Or x > 7 Or x <> Int(x) Then
         Print "Retry - Invalid Value"
         GoTo retry
